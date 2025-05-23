@@ -1,9 +1,10 @@
+import axios from 'axios';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
   Dimensions,
   Image,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,10 +12,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
-import axios from 'axios';
-import { useRouter } from 'expo-router';
 import { useEmployee } from '../context/EmployeeContext';
 
 export default function Login() {
@@ -132,12 +131,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   container: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-  },
+  flex: 1,
+  backgroundColor: '#ffffff',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 24,
+  width: '100%',
+  maxWidth: 400, // limit width like a mobile screen
+  alignSelf: 'center', // center horizontally on web
+},
   logo: {
     width: width * 0.5,
     height: width * 0.5,
@@ -158,16 +160,17 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingHorizontal: 10,
   },
-  input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#bdc3c7',
-    borderRadius: 10,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 20,
-    backgroundColor: '#fff',
-  },
+ input: {
+  width: '100%',
+  maxWidth: 350, // prevent stretching
+  borderWidth: 1,
+  borderColor: '#bdc3c7',
+  borderRadius: 10,
+  padding: 12,
+  fontSize: 16,
+  marginBottom: 20,
+  backgroundColor: '#fff',
+},
   button: {
     backgroundColor: 'red',
     paddingVertical: 12,
