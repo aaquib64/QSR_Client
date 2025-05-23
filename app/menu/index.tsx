@@ -263,8 +263,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9FAFB",
   },
   container: {
-    flex: 1,
-  },
+  flex: 1,
+  backgroundColor: '#ffffff',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 24,
+  width: '100%',
+  maxWidth: 400, // limit width like a mobile screen
+  alignSelf: 'center', // center horizontally on web
+},
   scrollContent: {
     paddingBottom: 180,
   },
@@ -316,16 +323,16 @@ const styles = StyleSheet.create({
     color: "#6B7280",
   },
   quantityInput: {
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: "#D1D5DB",
-    borderRadius: 10,
-    width: 50,
-    height: 38,
-    textAlign: "center",
-    fontSize: 16,
-    color: "#111827",
-  },
+  marginTop: 8,
+  borderWidth: 1,
+  borderColor: "#D1D5DB",
+  borderRadius: 10,
+  width: 50, // ✅ This is good
+  height: 38,
+  textAlign: "center",
+  fontSize: 16,
+  color: "#111827",
+},
   addButton: {
     marginTop: 10,
     backgroundColor: "#2563EB",

@@ -153,16 +153,30 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 220,
   },
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    paddingBottom: 40,
-  },
-  amountBox: {
-    marginBottom: 24,
-    alignItems: 'center',
-  },
+ container: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: 24,
+  width: '100%',
+  maxWidth: 400,
+  alignSelf: 'center',
+},
+
+amountBox: {
+  marginBottom: 24,
+  alignItems: 'center',
+  backgroundColor: '#F9FAFB',
+  padding: 16,
+  borderRadius: 16,
+  width: '100%',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 4,
+},
+
   label: {
     fontSize: 18,
     color: '#4B5563', // gray-700
