@@ -1,0 +1,292 @@
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  TextInput,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { useRouter } from 'expo-router';
+import axios from 'axios';
+import { useEmployee } from '../../context/EmployeeContext'; // custom hook from context
+
+
+
+
+const menuData = {
+  Beverages: [
+    {
+      id: 1,
+      name: "Coffee",
+      price: 60,
+      image: "http://3.bp.blogspot.com/-U2uqPh7hw0U/UHNEoLahrPI/AAAAAAAAAv8/buuzujhKZkY/s1600/coffee.jpg", // Coffee in a cup
+    },
+    {
+      id: 2,
+      name: "Tea",
+      price: 40,
+      image: "https://images5.alphacoders.com/381/381599.jpg", // Tea in a cup
+    },
+  ],
+  Snacks: [
+    {
+      id: 3,
+      name: "Chips",
+      price: 30,
+      image: "https://tse2.mm.bing.net/th?id=OIP.0yAPT_W3Qw3NEsP2Kq7zCAHaHa&pid=Api&P=0&h=180"
+    },
+    {
+      id: 4,
+      name: "Cookies",
+      price: 50,
+      image: "https://www.shugarysweets.com/wp-content/uploads/2020/05/chocolate-chip-cookies-recipe.jpg", // Cookies
+    },
+  ],
+  Combos: [
+    {
+      id: 5,
+      name: "Burger + Fries",
+      price: 150,
+      image: "https://cdn.pixabay.com/photo/2023/04/14/18/53/ai-generated-7925719_1280.jpg", // Burger + Fries
+    },
+    {
+      id: 6,
+      name: "Pizza + Drink",
+      price: 180,
+      image: "https://www.saharapizzablackdiamond.com/wp-content/uploads/2019/04/Best-Drinks-to-Enjoy-with-Pizza.jpg", // Pizza + Drink
+    },
+  ],
+  Meals: [
+    {
+      id: 7,
+      name: "Chicken Meal",
+      price: 220,
+      image: "https://img.freepik.com/premium-photo/close-up-delicious-chicken-meal_947814-60038.jpg?w=2000", // Chicken meal
+    },
+    {
+      id: 8,
+      name: "Veg Thali",
+      price: 180,
+      image: "https://media.architecturaldigest.in/wp-content/uploads/2020/02/vegetarian-thali-mumbai-restautants_2.jpg", // Veg Thali
+    },
+  ],
+};
+
+
+
+const Greeting = ({ employeeName }: { employeeName: string }) => (
+  <Text className="text-xl font-bold text-gray-800 m-4">
+    <Text className="text-blue-700">Welcome, <Text style={styles.name}>{employeeName}</Text>
+
+    </Text>
+    
+  </Text>
+);
+
+const MenuItem = ({ item, onAddToCart }: any) => {
+  const [quantity, setQuantity] = useState("1");
+
+  const handleAdd = () => {
+    const q = parseInt(quantity);
+    if (!isNaN(q) && q > 0) {
+      onAddToCart(item, q);
+      setQuantity("1");
+    }
+  };
+
+  return (
+   <View className="bg-white p-4 rounded-xl w-44 mx-2 items-center justify-center">
+  <Image
+    source={{ uri: item.image }}
+    className="w-28 h-28 rounded-md mb-2"
+    resizeMode="cover"
+  />
+  <Text className="font-semibold text-gray-700 text-center">{item.name}</Text>
+  <Text className="text-sm text-gray-500 mb-2 text-center">
+    ₹{item.price.toFixed(2)}
+  </Text>
+  <TextInput
+    className="border border-gray-300 w-12 h-10 text-center rounded-md mb-2"
+    keyboardType="number-pad"
+    value={quantity}
+    onChangeText={setQuantity}
+  />
+  <TouchableOpacity
+    className="bg-blue-500 px-4 py-2 rounded-full"
+    onPress={handleAdd}
+  >
+    <Text className="text-white text-sm font-medium">Add to Cart</Text>
+  </TouchableOpacity>
+</View>
+
+  );
+};
+
+const MenuSection = ({ category, items, onAddToCart }: any) => (
+  <View className="mb-6">
+    <Text className="text-lg font-semibold text-gray-800 mx-4 mb-2"> {category}</Text>
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => <MenuItem item={item} onAddToCart={onAddToCart} />}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+    />
+  </View>
+);
+
+const CartSummary = ({ cartItems }: any) => {
+  const totalItems = cartItems.reduce((acc: number, item: any) => acc + item.quantity, 0);
+  const totalPrice = cartItems.reduce((acc: number, item: any) => acc + item.quantity * item.price, 0);
+
+  return (
+    <View className="bg-green-100 p-4 rounded-xl mt-6">
+      <Text className="text-lg font-bold text-green-800 mb-2">Cart Summary</Text>
+      {cartItems.length === 0 ? (
+        <Text className="text-gray-500">Your cart is empty</Text>
+      ) : (
+        <>
+          {cartItems.map((item: any) => (
+            <Text key={item.id} className="text-gray-700">
+              {item.name} x {item.quantity} =₹{(item.quantity * item.price).toFixed(2)}
+            </Text>
+          ))}
+          <Text className="mt-2 font-semibold text-gray-800">
+            Total Items: {totalItems}
+          </Text>
+          <Text className="font-semibold text-gray-800">
+            Total Price: ₹{totalPrice.toFixed(2)}
+          </Text>
+        </>
+      )}
+    </View>
+  );
+};
+
+export default function Menu() {
+  const [cart, setCart] = useState<any[]>([]);
+   const router = useRouter();
+   const { employeeName, employeeId } = useEmployee();
+   
+   console.log("Employee ID:", employeeId);
+
+
+    console.log("Name in Menu Screen:", employeeName);
+
+  const handleAddToCart = (item: any, quantity: number) => {
+    setCart((prev) => {
+      const index = prev.findIndex((i) => i.id === item.id);
+      if (index !== -1) {
+        const updated = [...prev];
+        updated[index].quantity += quantity;
+        return updated;
+      } else {
+        return [...prev, { ...item, quantity }];
+      }
+    });
+  };
+
+  return (
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+       <Greeting employeeName={employeeName|| 'Employee'} />
+        {Object.entries(menuData).map(([category, items]) => (
+          <MenuSection
+            key={category}
+            category={category}
+            items={items}
+            onAddToCart={handleAddToCart}
+          />
+        ))}
+        <View style={{ height: 120 }} /> {/* Spacer for footer */}
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <CartSummary cartItems={cart} />
+        {cart.length > 0 && (
+             <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={async () => {
+              try {
+                // const employeeId = "EMP025"; 
+                const totalAmount = cart.reduce((acc, item) => acc + item.quantity * item.price, 0);
+
+                if (!employeeId || !employeeName) {
+                    alert("Employee ID or name is missing.");
+                    return;
+                  }
+
+              await axios.post('https://qsr-server.onrender.com/orders', {
+                employeeId,         // e.g., "EMP001"
+                totalAmount,        // e.g., 230
+                paymentMode: "UPI", // or "Cash", etc.
+                
+              }); 
+
+                   
+                // alert("Order placed successfully!");
+                // setCart([]); // clear cart after order
+
+                router.push({
+                    pathname: '/menu/payment',
+                    params: { amount: totalAmount.toString() },
+                  });
+              } catch (error) {
+                  console.error("Order failed:", error.response?.data || error.message);
+                  alert("Order failed: " + (error.response?.data?.error || "Unknown error"));
+                }
+            }}
+          >
+            <Text style={styles.checkoutText}>Proceed to Pay</Text>
+            </TouchableOpacity>
+
+        )}
+      </View>
+    </View>
+  );
+}
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f3f4f6',
+  padding: 20
+  },
+  scrollContainer: {
+    paddingBottom: 140, // Space for the footer
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    padding: 12,
+    borderTopWidth: 1,
+    borderColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
+  },
+  checkoutButton: {
+    backgroundColor: '#f44336',
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  checkoutText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  name: {
+  color: '#ff0000', // text-blue-700
+},
+});
