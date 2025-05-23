@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
   headerImage: {
     width: '100%',
     height: 220,
+    maxWidth: 400,
   },
  container: {
   flex: 1,
@@ -219,7 +220,8 @@ amountBox: {
   confirmButton: {
     backgroundColor: '#2563EB', // blue-600
     paddingVertical: 14,
-    borderRadius: 16,
+    paddingHorizontal: 32,
+    borderRadius: 28,
     marginTop: 20,
     alignItems: 'center',
   },
