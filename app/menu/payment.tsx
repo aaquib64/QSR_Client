@@ -145,15 +145,22 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: 'white',
+    alignItems: 'center'
   },
   scrollContent: {
-    flexGrow: 1,
-  },
-  headerImage: {
-    width: '100%',
-    height: 220,
-    maxWidth: 400,
-  },
+  flexGrow: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  padding: 16,
+},
+headerImage: {
+  width: '100%',
+  height: 220,
+  maxWidth: 400,
+  alignSelf: 'center',
+  borderRadius: 16,
+  marginBottom: 16,
+},
  container: {
   flex: 1,
   justifyContent: 'center',
