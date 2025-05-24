@@ -223,7 +223,7 @@ amountBox: {
     fontWeight: '600',
   },
   confirmButton: {
-    backgroundColor: '#2563EB', // blue-600
+    backgroundColor: 'green', // blue-600
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 28,

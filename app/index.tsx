@@ -54,7 +54,10 @@ export default function Login() {
             style={{ flex: 1 }}
           >
             <View style={styles.container}>
-              <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+               <Image  source={{
+               uri:
+              'https://cdni.iconscout.com/illustration/premium/thumb/food-delivery-illustration-download-in-svg-png-gif-file-formats--e-application-online-order-service-pack-commerce-shopping-illustrations-6561619.png',
+          }}style={styles.logo} />
 
               <Text style={styles.header}>Quick Service Restaurant</Text>
               <Text style={styles.subtitle}>
@@ -87,7 +90,10 @@ export default function Login() {
           </KeyboardAvoidingView>
         ) : (
           <View style={styles.container}>
-           <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+            <Image  source={{
+               uri:
+              'https://cdni.iconscout.com/illustration/premium/thumb/food-delivery-illustration-download-in-svg-png-gif-file-formats--e-application-online-order-service-pack-commerce-shopping-illustrations-6561619.png',
+          }}style={styles.logo} />
 
             <Text style={styles.header}>Quick Service Restaurant</Text>
             <Text style={styles.subtitle}>
@@ -141,13 +147,13 @@ const styles = StyleSheet.create({
   alignSelf: 'center', // center horizontally on web
 },
   logo: {
-    width: width * 0.5,
+    width: width * 0.9,
     height: width * 0.5,
     marginBottom: 20,
     resizeMode: 'contain',
   },
   header: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     color: 'red',
     marginBottom: 10,

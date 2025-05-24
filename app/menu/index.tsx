@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useRouter } from "expo-router";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -67,9 +67,6 @@ const MenuSection = ({ category, items, onAddToCart }: any) => (
   <View style={styles.menuSection}>
     <Text style={styles.menuSectionTitle}>{category}</Text>
 
-console.log("Items received in MenuSection:", items);
-
-
     <FlatList
       horizontal
       data={items}
@@ -93,8 +90,8 @@ const CartSummary = ({ cartItems }: any) => {
         <Text style={styles.cartEmpty}>Your cart is empty</Text>
       ) : (
         <>
-          {cartItems.map((item: any) => (
-            <Text key={item.id} style={styles.cartItemText}>
+          {cartItems.map((item: any, index: number) => (
+            <Text key={item.id ?? item._id ?? index} style={styles.cartItemText}>
               {item.name} x {item.quantity} = ₹{(item.quantity * item.price).toFixed(2)}
             </Text>
           ))}
@@ -248,6 +245,7 @@ const styles = StyleSheet.create({
   },
   employeeName: {
     color: "#DC2626",
+    fontFamily: "cursive",
   },
   menuSection: {
     marginBottom: 24,
@@ -299,7 +297,7 @@ const styles = StyleSheet.create({
 },
   addButton: {
     marginTop: 10,
-    backgroundColor: "#2563EB",
+    backgroundColor: "red",
     paddingVertical: 8,
     paddingHorizontal: 22,
     borderRadius: 22,
@@ -309,7 +307,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   cartSummary: {
-    backgroundColor: "#D1FAE5",
+    backgroundColor: "#FEE2E2",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
@@ -317,20 +315,20 @@ const styles = StyleSheet.create({
   cartSummaryTitle: {
     fontWeight: "700",
     fontSize: 18,
-    color: "#065F46",
+    color: "#B91C1C",
     marginBottom: 6,
   },
   cartEmpty: {
-    color: "#4B5563",
+    color: "#B91C1C",
     fontStyle: "italic",
   },
   cartItemText: {
-    color: "#065F46",
+    color: "#B91C1C",
   },
   cartTotal: {
     fontWeight: "700",
     marginTop: 4,
-    color: "#065F46",
+    color: "#B91C1C",
   },
   footer: {
     position: "absolute",
@@ -348,7 +346,7 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
   checkoutButton: {
-    backgroundColor: "#059669",
+    backgroundColor: "red",
     paddingVertical: 14,
     borderRadius: 28,
     alignItems: "center",
