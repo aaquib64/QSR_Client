@@ -59,7 +59,7 @@ const PaymentOption = () => {
         <Image
           source={{
             uri:
-              'https://thumbs.dreamstime.com/b/courier-characters-delivering-food-products-to-customer-bike-express-delivery-service-coronavirus-pandemic-goods-183328784.jpg',
+              'https://img.freepik.com/premium-vector/secure-payment-credit-card-icon-with-shield-secure-transaction-vector-stock-illustration_100456-11326.jpg?w=2000',
           }}
           style={styles.headerImage}
           resizeMode="cover"
@@ -145,12 +145,11 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: 'white',
-    alignItems: 'center'
+    
   },
   scrollContent: {
   flexGrow: 1,
   justifyContent: 'center',
-  alignItems: 'center',
   padding: 16,
 },
 headerImage: {
@@ -163,8 +162,6 @@ headerImage: {
 },
  container: {
   flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
   padding: 24,
   width: '100%',
   maxWidth: 400,
@@ -204,6 +201,7 @@ amountBox: {
   },
   paymentMethod: {
     flexDirection: 'row',
+    width: '100%',
     justifyContent: 'space-between',
     paddingVertical: 14,
     paddingHorizontal: 16,
@@ -231,6 +229,7 @@ amountBox: {
     borderRadius: 28,
     marginTop: 20,
     alignItems: 'center',
+    width: '100%',
   },
   confirmButtonDisabled: {
     backgroundColor: '#93C5FD', // blue-300

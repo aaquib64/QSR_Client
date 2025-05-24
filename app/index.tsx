@@ -28,10 +28,10 @@ export default function Login() {
     }
 
     try {
-      const res = await axios.post('https://qsr-server.onrender.com/login', { employeeId });
+      const res = await axios.post('http://172.20.10.2:5000/login', { employeeId });
       if (res.data.success) {
         setEmployeeData({ name: res.data.name, id: employeeId });
-        Alert.alert('Success', 'Login Successful!');
+        // Alert.alert('Success', 'Login Successful!');
         router.push('/menu');
       } else {
         Alert.alert('Invalid ID', 'Employee ID not found');
@@ -54,7 +54,10 @@ export default function Login() {
             style={{ flex: 1 }}
           >
             <View style={styles.container}>
-              <Image source={require('../assets/LoginIcon.png')} style={styles.logo} />
+              <Image source={{
+            uri:
+              'https://cdni.iconscout.com/illustration/premium/thumb/food-delivery-on-motorbike-4095611-3408206.png',
+          }} style={styles.logo} />
 
               <Text style={styles.header}>Quick Service Restaurant</Text>
               <Text style={styles.subtitle}>
@@ -87,7 +90,10 @@ export default function Login() {
           </KeyboardAvoidingView>
         ) : (
           <View style={styles.container}>
-            <Image source={require('../assets/LoginIcon.png')} style={styles.logo} />
+            <Image source={{
+            uri:
+              'https://cdni.iconscout.com/illustration/premium/thumb/food-delivery-on-motorbike-4095611-3408206.png',
+          }} style={styles.logo} />
 
             <Text style={styles.header}>Quick Service Restaurant</Text>
             <Text style={styles.subtitle}>
