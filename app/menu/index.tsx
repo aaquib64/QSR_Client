@@ -117,7 +117,7 @@ export default function Menu() {
   useEffect(() => {
     const fetchMenu = async () => {
       try {
-        const res = await axios.get("http://172.20.10.2:5000/menu");
+        const res = await axios.get("https://qsr-server.onrender.com/menu");
         setMenuData(res.data);
         console.log("Fetched Menu:", res.data);
 
@@ -160,7 +160,7 @@ export default function Menu() {
 
       const totalAmount = cart.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
-      await axios.post("http://172.20.10.2:5000/orders", {
+      await axios.post("https://qsr-server.onrender.com/orders", {
         employeeId,
         totalAmount,
         paymentMode: "UPI",
