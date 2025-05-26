@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -21,26 +22,58 @@ export default function Login() {
   const router = useRouter();
   const { setEmployeeData } = useEmployee();
 
-  const handleLogin = async () => {
-    if (!employeeId.trim()) {
-      Alert.alert('Error', 'Employee ID is required');
-      return;
-    }
 
-    try {
-      const res = await axios.post('https://qsr-server.onrender.com/login', { employeeId });
-      if (res.data.success) {
-        setEmployeeData({ name: res.data.name, id: employeeId });
-        // Alert.alert('Success', 'Login Successful!');
-        router.push('/menu');
+  const handleLogin = async () => {
+  if (!employeeId.trim()) {
+    Alert.alert('Error', 'Employee ID is required');
+    return;
+  }
+
+  try {
+    const res = await axios.post('https://qsr-server.onrender.com/login', { employeeId });
+
+    // if (res.data.token) {                        working
+    if (res.data?.token && res.data?.name) {
+      //  Store token securely
+      await AsyncStorage.setItem('token', res.data.token);
+
+      setEmployeeData({ name: res.data.name, id: employeeId }); 
+
+      // Navigate to appropriate screen
+      if (res.data.role === 'manager' || res.data.role === 'supervisor') {
+        router.push('/admin'); // admin dashboard
       } else {
-        Alert.alert('Invalid ID', 'Employee ID not found');
+        router.push('/menu'); // regular employee menu
       }
-    } catch (error) {
-      Alert.alert('Server Error', 'Something went wrong while validating');
-      console.error(error);
+    } else {
+      Alert.alert('Invalid ID', 'Employee ID not found');
     }
-  };
+  } catch (error) {
+    Alert.alert('Server Error', 'Something went wrong while validating');
+    console.error(error);
+  }
+};
+
+  // const handleLogin = async () => {
+  //   if (!employeeId.trim()) {
+  //     Alert.alert('Error', 'Employee ID is required');
+  //     return;
+  //   }
+
+  //   try {
+  //     const res = await axios.post('https://qsr-server.onrender.com/login', { employeeId });
+  //     if (res.data.success) {
+  //       setEmployeeData({ name: res.data.name, id: employeeId });
+  //       // Alert.alert('Success', 'Login Successful!');
+  //       router.push('/menu');
+  //     } else {
+  //       Alert.alert('Invalid ID', 'Employee ID not found');
+  //     }
+  //   } catch (error) {
+  //     Alert.alert('Server Error', 'Something went wrong while validating');
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <View style={{ flex: 1 }}>

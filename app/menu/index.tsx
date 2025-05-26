@@ -16,7 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useEmployee } from "../../context/EmployeeContext"; // your custom hook
+import { useEmployee } from "../../context/EmployeeContext"; // your custom hook 
 
 
 
@@ -44,7 +44,7 @@ const MenuItem = ({ item, onAddToCart }: any) => {
   return (
     <View style={styles.menuItem}>
       <Image source={{ uri: item.image }} style={styles.menuItemImage} />
-      <Text style={styles.menuItemName}>{item.name}</Text>
+      <Text style={styles.menuItemName}>{item.menuItems}</Text>
       <Text style={styles.menuItemPrice}>₹{item.price.toFixed(2)}</Text>
       <TextInput
         keyboardType="number-pad"
@@ -90,9 +90,10 @@ const CartSummary = ({ cartItems }: any) => {
         <Text style={styles.cartEmpty}>Your cart is empty</Text>
       ) : (
         <>
+        
           {cartItems.map((item: any, index: number) => (
             <Text key={item.id ?? item._id ?? index} style={styles.cartItemText}>
-              {item.name} x {item.quantity} = ₹{(item.quantity * item.price).toFixed(2)}
+              {item.menuItems} x {item.quantity} = ₹{(item.quantity * item.price).toFixed(2)}
             </Text>
           ))}
           <Text style={styles.cartTotal}>Total Items: {totalItems}</Text>
@@ -130,17 +131,32 @@ export default function Menu() {
   }, []);
 
   const handleAddToCart = (item: any, quantity: number) => {
-    setCart((prev) => {
-      const index = prev.findIndex((i) => i.id === item.id);
-      if (index !== -1) {
-        const updated = [...prev];
-        updated[index].quantity += quantity;
-        return updated;
-      } else {
-        return [...prev, { ...item, quantity }];
-      }
-    });
-  };
+  //   setCart((prev) => {
+  //     const index = prev.findIndex((i) => i._id === item._id);
+  //     if (index !== -1) {
+  //       const updated = [...prev];
+  //       updated[index].quantity += quantity;
+  //       return updated;
+  //     } else {
+  //       return [...prev, { ...item, quantity }];
+  //     }
+  //   });
+  // };
+
+  setCart(prev => {
+  const existing = prev.find(i => i.menuItems === item.menuItems);
+  if (existing) {
+    // increase quantity if item exists
+    return prev.map(i =>
+      i.menuItems === item.menuItems ? { ...i, quantity: i.quantity + 1 } : i
+    );
+  } else {
+    // add new item if not in cart
+    return [...prev, { ...item, quantity: 1 }];
+  }
+});
+  }
+
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
@@ -157,7 +173,14 @@ export default function Menu() {
 
       const totalAmount = cart.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
+      console.log("Cart Contents:", cart);
+      const sanitizedItems = cart.map(item => item.menuItems);
+
+      console.log("Sanitized Items:", sanitizedItems); // Make sure it's not empty
+
+
       await axios.post("https://qsr-server.onrender.com/orders", {
+        menuItems: sanitizedItems,
         employeeId,
         totalAmount,
         paymentMode: "UPI",
@@ -221,11 +244,11 @@ export default function Menu() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: "#FFF1F2",
   },
   container: {
   flex: 1,
-  backgroundColor: '#ffffff',
+  backgroundColor: '#FFF1F2',
   alignItems: 'center',
   justifyContent: 'center',
   padding: 24,
@@ -307,7 +330,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   cartSummary: {
-    backgroundColor: "#FEE2E2",
+    backgroundColor: "#FFE4E6",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
