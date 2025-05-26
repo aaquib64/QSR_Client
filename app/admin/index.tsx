@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 
 const statusColors = {
-  Pending: '#FBBF24',    // Amber
+  Pending: 'red',    // Amber
   Preparing: '#3B82F6',  // Blue
   Ready: '#10B981',      // Green
   Delivered: '#047857',  // Dark Green
@@ -24,6 +24,8 @@ const statusColors = {
 const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [globalSearch, setGlobalSearch] = useState('');
+
 
   const [filterEmployee, setFilterEmployee] = useState('');
   const [filterPayment, setFilterPayment] = useState('');
@@ -59,25 +61,52 @@ const AdminDashboard = () => {
   }, []);
 
   const filteredOrders = useMemo(() => {
-    return orders.filter(order => {
-      const employeeMatch = filterEmployee.trim() === '' || 
-        (order.name && order.name.toLowerCase().includes(filterEmployee.toLowerCase())) ||
-        (order.employeeId && order.employeeId.toLowerCase().includes(filterEmployee.toLowerCase()));
+  if (globalSearch.trim() === '') return orders;
 
-      const paymentMatch = filterPayment.trim() === '' ||
-        (order.paymentMode && order.paymentMode.toLowerCase().includes(filterPayment.toLowerCase()));
+  return orders.filter(order => {
+    const search = globalSearch.toLowerCase();
+    const employeeMatch =
+      (order.name && order.name.toLowerCase().includes(search)) ||
+      (order.employeeId && order.employeeId.toLowerCase().includes(search));
 
-      const itemMatch = filterItem.trim() === '' || 
-        (Array.isArray(order.menuItems) && order.menuItems.some(item => 
-          item.toLowerCase().includes(filterItem.toLowerCase())
-        ));
+    const paymentMatch =
+      order.paymentMode && order.paymentMode.toLowerCase().includes(search);
 
-      const dateMatch = filterDate.trim() === '' || 
-        (order.createdAt && order.createdAt.startsWith(filterDate));
+    const itemMatch =
+      Array.isArray(order.menuItems) &&
+      order.menuItems.some(item =>
+        item.toLowerCase().includes(search)
+      );
 
-      return employeeMatch && paymentMatch && itemMatch && dateMatch;
-    });
-  }, [orders, filterEmployee, filterPayment, filterItem, filterDate]);
+    const dateMatch =
+      order.createdAt &&
+      new Date(order.createdAt).toISOString().startsWith(search);
+
+    return employeeMatch || paymentMatch || itemMatch || dateMatch;
+  });
+}, [orders, globalSearch]);
+
+
+  // const filteredOrders = useMemo(() => {
+  //   return orders.filter(order => {
+  //     const employeeMatch = filterEmployee.trim() === '' || 
+  //       (order.name && order.name.toLowerCase().includes(filterEmployee.toLowerCase())) ||
+  //       (order.employeeId && order.employeeId.toLowerCase().includes(filterEmployee.toLowerCase()));
+
+  //     const paymentMatch = filterPayment.trim() === '' ||
+  //       (order.paymentMode && order.paymentMode.toLowerCase().includes(filterPayment.toLowerCase()));
+
+  //     const itemMatch = filterItem.trim() === '' || 
+  //       (Array.isArray(order.menuItems) && order.menuItems.some(item => 
+  //         item.toLowerCase().includes(filterItem.toLowerCase())
+  //       ));
+
+  //     const dateMatch = filterDate.trim() === '' || 
+  //       (order.createdAt && order.createdAt.startsWith(filterDate));
+
+  //     return employeeMatch && paymentMatch && itemMatch && dateMatch;
+  //   });
+  // }, [orders, filterEmployee, filterPayment, filterItem, filterDate]);
 
   const renderOrder = ({ item }) => (
     <View style={styles.orderCard}>
@@ -90,7 +119,7 @@ const AdminDashboard = () => {
           : 'No items info'}
       </Text>
       <View style={styles.statusPaymentRow}>
-        <View style={[styles.statusBadge, {backgroundColor: statusColors[item.status] || '#6B7280'}]}>
+        <View style={[styles.statusBadge, {backgroundColor: statusColors [item.status] || 'red'}]}>
           <Text style={styles.statusText}>{item.status || 'Pending'}</Text>
         </View>
         <Text style={[styles.text, { marginLeft: 12 }]}><Text style={styles.bold}>Payment:</Text> {item.paymentMode || 'N/A'}</Text>
@@ -118,13 +147,30 @@ const AdminDashboard = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Admin Dashboard</Text>
+      
+
+      
+
 
       <ScrollView 
         horizontal 
         style={styles.filtersContainer}
         showsHorizontalScrollIndicator={false}
       >
-        <View style={styles.filterGroup}>
+          <View style={styles.filterGroup}>
+        <Text style={styles.filterLabel}>Search Orders</Text>
+        <TextInput
+          value={globalSearch}
+          onChangeText={setGlobalSearch}
+          placeholder="Search by employee, item, payment, date..."
+          style={styles.filterInput}
+          autoCorrect={false}
+          autoCapitalize="none"
+        />
+      </View>
+
+
+        {/* <View style={styles.filterGroup}>
           <Text style={styles.filterLabel}>Employee</Text>
           <TextInput
             value={filterEmployee}
@@ -136,7 +182,7 @@ const AdminDashboard = () => {
           />
         </View>
 
-        <View style={styles.filterGroup}>
+       <View style={styles.filterGroup}>
           <Text style={styles.filterLabel}>Payment Mode</Text>
           <TextInput
             value={filterPayment}
@@ -171,7 +217,7 @@ const AdminDashboard = () => {
             autoCapitalize="none"
             keyboardType="numeric"
           />
-        </View>
+        </View> */}
 
         <TouchableOpacity style={styles.clearButton} onPress={clearFilters} activeOpacity={0.8}>
           <Text style={styles.clearButtonText}>Clear Filters</Text>
@@ -198,7 +244,7 @@ export default AdminDashboard;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF1F2',
+    backgroundColor: '#ffffff',
     alignItems: 'center',
     padding: 24,
     width: '100%',
@@ -218,18 +264,18 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 20,
     borderBottomWidth: 3,
-    borderBottomColor: "#2563EB",
+    borderBottomColor: "red",
     paddingBottom: 10,
     width: '100%',
-    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+    backgroundColor: '#ffffff',
     borderRadius: 12,
   },
   filtersContainer: {
     flexDirection: 'row',
-    marginBottom: 16,
+    marginBottom: 30,
     width: '100%',
-    paddingVertical: 6,
-    backgroundColor: '#FFF1F2',
+    paddingVertical: 10,
+    backgroundColor: '#ffffff',
     borderRadius: 12,
     paddingHorizontal: 12,
     shadowColor: '#000',
@@ -240,23 +286,25 @@ const styles = StyleSheet.create({
   },
   filterGroup: {
     marginRight: 14,
+    width: 240,
     minWidth: 140,
+  
   },
   filterLabel: {
     fontWeight: '700',
     marginBottom: 6,
-    color: '#475569', // slate-600
+    color: 'red', // slate-600
     fontSize: 13,
   },
   filterInput: {
     borderWidth: 1,
-    borderColor: '#CBD5E1', // slate-300
+    borderColor: 'red', // slate-300
     borderRadius: 10,
     paddingHorizontal: 12,
     paddingVertical: 8,
     backgroundColor: '#F1F5F9', // slate-100
-    fontSize: 15,
-    color: '#334155',
+    fontSize: 17,
+    color: '#red',
     shadowColor: '#000',
     shadowOpacity: 0.07,
     shadowOffset: { width: 0, height: 2 },
@@ -264,20 +312,25 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     justifyContent: 'center',
+    width: 100,
+    height: 37,
     backgroundColor: '#EF4444', // red-500
     borderRadius: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 15,
+    
     alignSelf: 'center',
     shadowColor: '#EF4444',
-    shadowOpacity: 0.35,
-    shadowOffset: { width: 0, height: 6 },
-    shadowRadius: 10,
+    // shadowOpacity: 0.35,
+    // shadowOffset: { width: 0, height: 6 },
+    // shadowRadius: 10,
+    marginTop: 25,
   },
   clearButtonText: {
+    alignItems: 'center',
     color: '#fff',
-    fontWeight: '700',
+    fontWeight: '500',
     fontSize: 14,
+     paddingVertical: 5,
   },
   noOrdersText: {
     textAlign: "center",
@@ -292,7 +345,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     borderRadius: 18,
     borderLeftWidth: 8,
-    borderLeftColor: "#2563EB", // blue-600
+    borderLeftColor: "red", // blue-600
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.08,
